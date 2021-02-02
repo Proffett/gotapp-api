@@ -5,8 +5,9 @@ import CharacterPage from "../pages/characterPage";
 import HousePage from "../pages/housePage";
 import BookPage from "../pages/bookPage";
 import ErrorMessage from "../errorMessage";
+import BooksItem from "../pages/booksItem";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Col, Row, Container, Button } from "reactstrap";
-
 
 export default class App extends Component {
   constructor(props) {
@@ -18,7 +19,6 @@ export default class App extends Component {
     };
 
     this.onClickHandler = this.onClickHandler.bind(this);
-
   }
 
   componentDidCatch() {
@@ -40,33 +40,44 @@ export default class App extends Component {
 
   render() {
     const { randomCharView } = this.state;
-    const randomCharacterView = randomCharView ? <RandomChar /> : null;
+    const randomCharacterView = randomCharView ? <RandomChar/> : null;
 
     if (this.state.error) {
       return <ErrorMessage />;
     }
 
     return (
-      <>
-        <Container>
-          <Header />
-        </Container>
-        <Container>
-          <Row>
-            <Col lg={{ size: 5, offset: 0 }}>
-              <Button color="primary" onClick={this.onClickHandler}>
-                toggle
-              </Button>
-              {randomCharacterView}
-            </Col>
-          </Row>
+      <Router>
+        <div className="app">
+          <Container>
+            <Header />
+          </Container>
+          <Container>
+            <Row>
+              <Col lg={{ size: 5, offset: 0 }}>
+                <Button color="primary" onClick={this.onClickHandler}>
+                  toggle
+                </Button>
+                {randomCharacterView}
+              </Col>
+            </Row>
+            <Route
+              path="/"
+              exact
+              component={() => <h1>Welcome to GoT DB</h1>}
+            />
+            <Route path="/characters" component={CharacterPage} />
+            <Route path="/books" exact component={BookPage} />
+            <Route path="/houses" component={HousePage} />
+            <Route path="/books/:id" render={
+              ({match, location, history}) => {
+                const {id} = match.params
+                
+                return <BooksItem bookId={id} />}
+              
+              } />
 
-          <CharacterPage />
-
-          <BookPage />
-
-          <HousePage />
-          {/* <Row>
+            {/* <Row>
                            <Col md="6">
                              <ItemList
                                onItemSelected={this.onItemSelected}
@@ -79,7 +90,7 @@ export default class App extends Component {
                            </Col>
                          </Row> */}
 
-          {/* <Row>
+            {/* <Row>
                            <Col md="6">
                              <ItemList
                                onItemSelected={this.onItemSelected}
@@ -96,8 +107,9 @@ export default class App extends Component {
                              <ItemDetails itemId={this.state.selectedBook} />
                            </Col>
                          </Row> */}
-        </Container>
-      </>
+          </Container>
+        </div>
+      </Router>
     );
   }
 }
