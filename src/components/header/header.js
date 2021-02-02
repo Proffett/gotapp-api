@@ -28,24 +28,22 @@ const HeaderLinks = styled.ul`
 
 const Header = () => {
     return (
-        <HeaderBlock>
-            <HeaderTitle>
-                <a href="#">
-                Game of Thrones DB
-                </a>
-            </HeaderTitle>
-            <HeaderLinks>
-                <li>
-                    <a href="#">Characters</a>
-                </li>
-                <li>
-                    <a href="#">Houses</a>
-                </li>
-                <li>
-                    <a href="#">Books</a>   
-                </li>
-            </HeaderLinks>
-        </HeaderBlock>
+      <HeaderBlock>
+        <HeaderTitle>
+          <a href="http://localhost:3000/">Game of Thrones DB</a>
+        </HeaderTitle>
+        <HeaderLinks>
+          <li>
+            <a href="http://localhost:3000/">Characters</a>
+          </li>
+          <li>
+            <a href="http://localhost:3000/">Houses</a>
+          </li>
+          <li>
+            <a href="http://localhost:3000/">Books</a>
+          </li>
+        </HeaderLinks>
+      </HeaderBlock>
     );
 };
 
