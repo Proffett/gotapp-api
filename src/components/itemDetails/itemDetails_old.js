@@ -1,6 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
-import {useState, useEffect} from 'react'
 // import Spinner from "../spinner";
 // import ErrorMessage from "../errorMessage/errorMessage";
 
@@ -14,46 +13,59 @@ const Field = ({ item, field, label }) => {
 };
 export { Field };
 
+export default class ItemDetailsOld extends Component {
+  state = {
+    item: null,
+  };
 
-export default function ItemDetails (props) {
+  componentDidMount() {
+    this.updateItem();
+  }
 
-  const [item, setItem] = useState([])
+  componentDidUpdate(prevProps) {
+    if (this.props.itemId !== prevProps.itemId) {
+      this.updateItem();
+    }
+  }
 
-  useEffect(() => {
-    if (!props.itemId) {
+  updateItem() {
+    const { itemId, getData } = this.props;
+    if (!itemId) {
       return;
-    };
+    }
 
-    props.getData(props.itemId).then((id) => {
-      setItem(id);
+    getData(itemId).then((item) => {
+      this.setState({ item });
     });
+    // console.log(this.state.item);
+  }
 
-  }, [props.itemId]);
-
-
+  render() {
     const Div = styled.div`
       background-color: #fff;
       padding: 5px;
     `;
 
-
-    if (!props.itemId) {
+    if (!this.state.item) {
       return (
         <Div>
-          <span className="select-error" style={{color: 'red'}}>Please select item in the list</span>
+          <span className="select-error">Please select item in the list</span>
         </Div>
       );
     }
 
+    const { item } = this.state;
     const { name } = item;
+
     return (
       <Div className="char-details rounded">
         <h4>{name}</h4>
         <ul className="list-group list-group-flush">
-          {React.Children.map(props.children, (child) => {
+          {React.Children.map(this.props.children, (child) => {
             return React.cloneElement(child, { item });
           })}
         </ul>
       </Div>
     );
+  }
 }

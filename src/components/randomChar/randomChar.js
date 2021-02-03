@@ -1,73 +1,79 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Spinner from "../spinner";
 import ErrorMessage from "../errorMessage/errorMessage";
-import gotService from "../../services/service";
+import GotService from "../../services/service";
 import propTypes from 'prop-types';
 
-export default class RandomChar extends Component {
-  gotService = new gotService();
 
-  state = {
-    char: {},
-    loading: true,
-    error: false,
-  }
+export default function RandomChar(props) {
+  const gotService = new GotService();
+  const [char, setChar] = useState([]);
+  const [loading, setLoad] = useState(true);
+  const [error, setError] = useState(false);
 
 
-  componentDidMount() {
-    this.updateChar();
-    this.timerId = setInterval(this.updateChar, this.props.interval);
-  }
-  componentWillUnmount() {
-    clearInterval(this.timerId);
-  }
 
-  onCharLoaded = (char) => {
-    this.setState({ char, loading: false });
+
+  useEffect(() => {
+    updateChar();
+    let timerId = setInterval(updateChar, props.interval);
+    return () => {
+      clearInterval(timerId);
+    }
+
+  }, [])
+
+
+  const onCharLoaded = (character) => {
+    setChar(character);
+    setLoad(!loading);
   };
 
-  onError = (err) => {
-    this.setState({
-      error: true,
-      loading: false,
-    });
+  const onError = (err) => {
+    setError({ error: true });
+    setLoad({ loading: false });
   };
-
-  updateChar = () => {
+  const updateChar = () => {
     const id = Math.floor(Math.random() * 140 + 25);
-    this.gotService
+  
+    gotService
       .getCharacter(id)
-      .then(this.onCharLoaded)
-      .catch(this.onError);
+      .then(onCharLoaded)
+      .catch(onError);
+    
   };
 
-  render() {
-    const { char, loading, error } = this.state;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? <View char={char} /> : null;
 
-    const Block = styled.div`
-      background-color: #fff;
-      padding: 25px 25px 15px 25px;
-      margin-bottom: 40px;
-      h4 {
-        margin-bottom: 20px;
-        text-align: center;
-      }
-      .term {
-        font-weight: bold;
-      }
-    `;
-    return (
-      <Block>
-        {errorMessage}
-        {spinner}
-        {content}
-      </Block>
-    );
-  }
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = <View char={char} />;
+
+
+  const Block = styled.div`
+    background-color: #fff;
+    padding: 25px 25px 15px 25px;
+    margin-bottom: 40px;
+    h4 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .term {
+      font-weight: bold;
+    }
+  `;
+
+  return (
+    <Block>
+      {errorMessage}
+      {spinner}
+      {content}
+    </Block>
+  );
+
+  
+
+
 }
 
   RandomChar.defaultProps = {
@@ -78,30 +84,31 @@ export default class RandomChar extends Component {
     interval: propTypes.number
   }
 
-const View = ({ char }) => {
-  const { name, gender, born, died, culture } = char;
 
-  return (
-    <>
-      <h4>Random Character: {name}</h4>
-      <ul className="list-group list-group-flush">
-        <li className="list-group-item d-flex justify-content-between">
-          <span className="term">Gender </span>
-          <span>{gender}</span>
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          <span className="term">Born </span>
-          <span>{born}</span>
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          <span className="term">Died </span>
-          <span>{died}</span>
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          <span className="term">Culture </span>
-          <span>{culture}</span>
-        </li>
-      </ul>
-    </>
-  );
-};
+const View = ({char}) => {
+
+    const { name, gender, born, died, culture } = char;
+    return (
+      <>
+        <h4>Random Character: {name}</h4>
+        <ul className="list-group list-group-flush">
+          <li className="list-group-item d-flex justify-content-between">
+            <span className="term">Gender </span>
+            <span>{gender}</span>
+          </li>
+          <li className="list-group-item d-flex justify-content-between">
+            <span className="term">Born </span>
+            <span>{born}</span>
+          </li>
+          <li className="list-group-item d-flex justify-content-between">
+            <span className="term">Died </span>
+            <span>{died}</span>
+          </li>
+          <li className="list-group-item d-flex justify-content-between">
+            <span className="term">Culture </span>
+            <span>{culture}</span>
+          </li>
+        </ul>
+      </>
+    );
+}

@@ -2,14 +2,17 @@ export default class GotService {
   constructor() {
     this._apiBase = "https://anapioficeandfire.com/api";
   }
-
+  
+  
   getResource = async (url) => {
-    const res = await fetch(`${this._apiBase}${url}`);
 
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}``, received ${res.status}`);
-    }
-    return await res.json();
+      const res = await fetch(`${this._apiBase}${url}`);
+
+      if (!res.ok || res.status === 404) {
+        throw new Error(`Could not fetch ${url}``, received ${res.status}`);
+      }
+      return await res.json();
+
   };
 
   getAllBooks = async () => {
