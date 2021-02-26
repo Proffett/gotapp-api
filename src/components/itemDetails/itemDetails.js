@@ -15,45 +15,44 @@ const Field = ({ item, field, label }) => {
 export { Field };
 
 
-export default function ItemDetails (props) {
-
-  const [item, setItem] = useState([])
+export default function ItemDetails(props) {
+  const [item, setItem] = useState([]);
 
   useEffect(() => {
     if (!props.itemId) {
       return;
-    };
-
-    props.getData(props.itemId).then((id) => {
-      setItem(id);
-    });
-
-  }, [props.itemId]);
-
-
-    const Div = styled.div`
-      background-color: #fff;
-      padding: 5px;
-    `;
-
-
-    if (!props.itemId) {
-      return (
-        <Div>
-          <span className="select-error" style={{color: 'red'}}>Please select item in the list</span>
-        </Div>
-      );
     }
 
-    const { name } = item;
+    props.getData(props.itemId).then((res) => {
+      setItem(res);
+    });
+  }, [props.itemId]);
+
+  const Div = styled.div`
+    background-color: #fff;
+    padding: 5px;
+  `;
+
+  if (!props.itemId) {
     return (
-      <Div className="char-details rounded">
-        <h4>{name}</h4>
-        <ul className="list-group list-group-flush">
-          {React.Children.map(props.children, (child) => {
-            return React.cloneElement(child, { item });
-          })}
-        </ul>
+      <Div>
+        <span className="select-error" style={{ color: "red" }}>
+          Please select item in the list
+        </span>
       </Div>
     );
+  }
+
+  const { name } = item;
+
+  return (
+    <Div className="char-details rounded">
+      <h4>{name}</h4>
+      <ul className="list-group list-group-flush">
+        {React.Children.map(props.children, (child) => {
+          return React.cloneElement(child, { item }, <h1>dssdfdsfsdfsdfsdfsf</h1>);
+        })}
+      </ul>
+    </Div>
+  );
 }

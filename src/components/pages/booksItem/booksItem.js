@@ -2,15 +2,17 @@ import React, { Component } from "react";
 // import { Col, Row } from "reactstrap";
 import ItemDetails, { Field } from "../../itemDetails";
 import gotService from "../../../services/service";
-
+// import Spinner from '../../spinner'
 export default class BooksItem extends Component {
                  gotService = new gotService();
                  state = {
                    selectedBook: 3,
                    error: false,
+                   loading: true
                  };
 
-                 render() {
+                 render() 
+                 {
                    return (
                      <ItemDetails
                        itemId={this.props.bookId}
@@ -20,6 +22,6 @@ export default class BooksItem extends Component {
                        <Field field="publisher" label="Publisher" />
                        <Field field="released" label="Released" />
                      </ItemDetails>
-                   );
+                   )
                  }
                }
